@@ -6,8 +6,9 @@
 #define RCHILD(x) 2 * x + 2
 #define PARENT(x) (x - 1) / 2
 
-minHeap initMinHeap(int capacity) {
+minHeap initMinHeap(int capacity, int num_of_heap) {
     minHeap hp ;
+    hp.num_of_heap = num_of_heap;
     hp.next_id = 0;
     if (capacity <= 0){
       printf("Capacity can't be <=0 initializing heap with capacity=10");
@@ -31,7 +32,7 @@ void pushHeap(minHeap *hp, int key) {
     node nd ;
     nd.key = key ;
     nd.id = (hp->next_id)++;
-    printf("push node key: %d, id: %d\n", nd.key, nd.id) ;
+  //  printf("push to %d heap,  node key: %d, id: %d\n",hp->num_of_heap, nd.key, nd.id) ;
 
     // Positioning the node at the right position in the min heap
     int i = (hp->size)++ ;
@@ -63,9 +64,8 @@ node popHeap(minHeap *hp) {
     node nd;
     if(hp->size) {
         nd=hp->elem[0];
-        printf("pop node key: %d, id: %d\n", hp->elem[0].key, hp->elem[0].id) ;
+  //      printf("pop from heap: %d node key: %d, id: %d\n",hp->num_of_heap, hp->elem[0].key, hp->elem[0].id) ;
         hp->elem[0] = hp->elem[--(hp->size)] ;
-        hp->elem = (node*)realloc(hp->elem, hp->size * sizeof(node)) ;
         heapify(hp, 0) ;
     } else {
         printf("Min Heap is empty!\n") ;
@@ -84,7 +84,7 @@ node peekHeap(minHeap *hp) {
   node nd;
   if(hp->size) {
       nd=hp->elem[0];
-      printf("peek node key: %d, id: %d\n", hp->elem[0].key, hp->elem[0].id) ;
+//      printf("peek node key: %d, id: %d\n", hp->elem[0].key, hp->elem[0].id) ;
   } else {
       printf("Min Heap is empty!\n") ;
       nd.key = INT_MIN;
@@ -94,7 +94,7 @@ node peekHeap(minHeap *hp) {
 }
 
 int testHeap() {
-    minHeap hp = initMinHeap(5) ;
+    minHeap hp = initMinHeap(5, -2) ;
     pushHeap(&hp, 1);
     pushHeap(&hp, 2);
     pushHeap(&hp, 8);

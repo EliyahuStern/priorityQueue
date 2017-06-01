@@ -13,7 +13,6 @@ void push(priorityQueue *pq, int key);
 node pop(priorityQueue *pq);
 node peek(priorityQueue *pq);
 int isEmpty (priorityQueue *pq);
-
 int testQueue();
 
 #endif
