@@ -3,23 +3,22 @@
 
 typedef struct node {
     int key ;
-    int id;
+    unsigned int id;
 } node ;
 
 typedef struct minHeap {
     int num_of_heap ;
-    int next_id ;
     int size ;
     int capacity;
     node *elem ;
 } minHeap ;
 
 minHeap initMinHeap(int capacity, int num);
-void pushHeap(minHeap *hp, int key);
+void pushHeap(minHeap *hp, int key, unsigned int id);
 node popHeap(minHeap *hp);
 node peekHeap(minHeap *hp);
 int isHeapEmpty(minHeap *hp);
-
+void freeHeap (minHeap *hp);
 int testHeap();
 
 #endif

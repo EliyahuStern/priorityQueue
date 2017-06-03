@@ -9,7 +9,6 @@
 minHeap initMinHeap(int capacity, int num_of_heap) {
     minHeap hp ;
     hp.num_of_heap = num_of_heap;
-    hp.next_id = 0;
     if (capacity <= 0){
       printf("Capacity can't be <=0 initializing heap with capacity=10");
       capacity = 10;
@@ -20,10 +19,10 @@ minHeap initMinHeap(int capacity, int num_of_heap) {
     return hp ;
 }
 
-void pushHeap(minHeap *hp, int key) {
+void pushHeap(minHeap *hp, int key, unsigned int id) {
     // allocating space
-    if(hp->size==hp->capacity) {
-        printf("realloc the heap!\n");
+    if(hp->size == hp->capacity) {
+        printf("realloc the %d heap!\n", hp->num_of_heap);
         hp->capacity *= 2 ;
         hp->elem = (node*)realloc(hp->elem, (hp->capacity) * sizeof(node)) ;
     }
@@ -31,8 +30,8 @@ void pushHeap(minHeap *hp, int key) {
     // initializing the node with value
     node nd ;
     nd.key = key ;
-    nd.id = (hp->next_id)++;
-  //  printf("push to %d heap,  node key: %d, id: %d\n",hp->num_of_heap, nd.key, nd.id) ;
+    nd.id = (id)++;
+    printf("push to %d heap,  node key: %d, id: %d\n",hp->num_of_heap, nd.key, nd.id) ;
 
     // Positioning the node at the right position in the min heap
     int i = (hp->size)++ ;
@@ -62,9 +61,9 @@ void heapify(minHeap *hp, int i) {
 
 node popHeap(minHeap *hp) {
     node nd;
-    if(hp->size) {
+    if(!isHeapEmpty(hp)) {
         nd=hp->elem[0];
-  //      printf("pop from heap: %d node key: %d, id: %d\n",hp->num_of_heap, hp->elem[0].key, hp->elem[0].id) ;
+        printf("pop from heap: %d node key: %d, id: %d\n",hp->num_of_heap, hp->elem[0].key, hp->elem[0].id) ;
         hp->elem[0] = hp->elem[--(hp->size)] ;
         heapify(hp, 0) ;
     } else {
@@ -77,14 +76,14 @@ node popHeap(minHeap *hp) {
 }
 
 int isHeapEmpty(minHeap *hp){
-  return hp->size ;
+  return !hp->size ;
 }
 
 node peekHeap(minHeap *hp) {
   node nd;
-  if(hp->size) {
+  if(!isHeapEmpty(hp)) {
       nd=hp->elem[0];
-//      printf("peek node key: %d, id: %d\n", hp->elem[0].key, hp->elem[0].id) ;
+      printf("peek node key: %d, id: %d\n", hp->elem[0].key, hp->elem[0].id) ;
   } else {
       printf("Min Heap is empty!\n") ;
       nd.key = INT_MIN;
@@ -93,16 +92,20 @@ node peekHeap(minHeap *hp) {
   return nd;
 }
 
+void freeHeap (minHeap *hp){
+  free(hp->elem);
+}
+
 int testHeap() {
     minHeap hp = initMinHeap(5, -2) ;
-    pushHeap(&hp, 1);
-    pushHeap(&hp, 2);
-    pushHeap(&hp, 8);
+    pushHeap(&hp, 1, 0);
+    pushHeap(&hp, 2, 1);
+    pushHeap(&hp, 8, 2);
     peekHeap(&hp);
-    pushHeap(&hp, 4);
-    pushHeap(&hp, 3);
+    pushHeap(&hp, 4, 3);
+    pushHeap(&hp, 3, 4);
     peekHeap(&hp);
-    pushHeap(&hp, 9);
+    pushHeap(&hp, 9, 5);
     popHeap(&hp);
     popHeap(&hp);
     peekHeap(&hp);

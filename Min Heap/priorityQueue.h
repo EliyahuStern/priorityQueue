@@ -3,7 +3,8 @@
 #include "minHeap.h"
 
 typedef struct priorityQueue {
-    int size ;
+    unsigned int id ;
+    unsigned int size ;
     minHeap indexes ;
     minHeap *ranges ;
 } priorityQueue ;
@@ -13,6 +14,7 @@ void push(priorityQueue *pq, int key);
 node pop(priorityQueue *pq);
 node peek(priorityQueue *pq);
 int isEmpty (priorityQueue *pq);
+void freeQueue(priorityQueue *pq);
 int testQueue();
 
 #endif
