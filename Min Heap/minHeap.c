@@ -8,7 +8,8 @@
 
 minHeap initMinHeap(int capacity, int num_of_heap) {
     minHeap hp ;
-    hp.num_of_heap = num_of_heap;
+    hp.lastPoped = 0 ;
+    hp.num_of_heap = num_of_heap ;
     if (capacity <= 0){
       printf("Capacity can't be <=0 initializing heap with capacity=10");
       capacity = 10;
@@ -17,29 +18,6 @@ minHeap initMinHeap(int capacity, int num_of_heap) {
     hp.size = 0 ;
     hp.elem = (node*)malloc(capacity * sizeof(node));
     return hp ;
-}
-
-void pushHeap(minHeap *hp, int key, unsigned int id) {
-    // allocating space
-    if(hp->size == hp->capacity) {
-        printf("realloc the %d heap!\n", hp->num_of_heap);
-        hp->capacity *= 2 ;
-        hp->elem = (node*)realloc(hp->elem, (hp->capacity) * sizeof(node)) ;
-    }
-
-    // initializing the node with value
-    node nd ;
-    nd.key = key ;
-    nd.id = (id)++;
-    printf("push to %d heap,  node key: %d, id: %d\n",hp->num_of_heap, nd.key, nd.id) ;
-
-    // Positioning the node at the right position in the min heap
-    int i = (hp->size)++ ;
-    while(i && nd.key < hp->elem[PARENT(i)].key) {
-        hp->elem[i] = hp->elem[PARENT(i)] ;
-        i = PARENT(i) ;
-    }
-    hp->elem[i] = nd ;
 }
 
 void swap(node *n1, node *n2) {
@@ -59,37 +37,75 @@ void heapify(minHeap *hp, int i) {
     }
 }
 
-node popHeap(minHeap *hp) {
-    node nd;
-    if(!isHeapEmpty(hp)) {
-        nd=hp->elem[0];
-        printf("pop from heap: %d node key: %d, id: %d\n",hp->num_of_heap, hp->elem[0].key, hp->elem[0].id) ;
-        hp->elem[0] = hp->elem[--(hp->size)] ;
-        heapify(hp, 0) ;
-    } else {
-        printf("Min Heap is empty!\n") ;
-        free(hp->elem) ;
-        nd.key = INT_MIN;
-        nd.id = INT_MIN;
+void pushHeap(minHeap *hp, int key, unsigned int id) {
+  // initializing the node with value
+  node nd;
+  nd.key = key ;
+  nd.id = id ;
+
+  if (hp->lastPoped){
+    hp->elem[0] = nd ;
+    hp->lastPoped = 0;
+    heapify(hp, 0) ;
+  }else{
+    // reallocating space
+    if(hp->size == hp->capacity) {
+        printf("realloc the %d heap!\n", hp->num_of_heap);
+        hp->capacity *= 2 ;
+        hp->elem = (node*)realloc(hp->elem, (hp->capacity) * sizeof(node)) ;
     }
-    return nd;
+    // Positioning the node at the right position in the min heap
+    int i = (hp->size)++ ;
+    while(i && nd.key < hp->elem[PARENT(i)].key) {
+        hp->elem[i] = hp->elem[PARENT(i)] ;
+        i = PARENT(i) ;
+    }
+    hp->elem[i] = nd ;
+  }
+  hp->lastPoped = 0;
 }
 
-int isHeapEmpty(minHeap *hp){
-  return !hp->size ;
+void handleLastPoped (minHeap *hp){
+    if(hp->size) --(hp->size);
+    hp->elem[0] = hp->elem[hp->size] ;
+    heapify(hp, 0) ;
+}
+
+node popHeap(minHeap *hp){
+  node nd;
+  if(hp->lastPoped) {
+    handleLastPoped(hp) ;
+  }
+  if(hp->size) {
+      nd=hp->elem[0];
+  } else {
+      printf("(pop)Min Heap %d is empty!\n", hp->num_of_heap) ;
+      nd.key = INT_MIN;
+      nd.id = INT_MIN;
+  }
+  hp->lastPoped = 1 ;
+  return nd;
 }
 
 node peekHeap(minHeap *hp) {
   node nd;
-  if(!isHeapEmpty(hp)) {
+  if(hp->lastPoped) {
+    handleLastPoped(hp) ;
+  }
+  if(hp->size) {
       nd=hp->elem[0];
-      printf("peek node key: %d, id: %d\n", hp->elem[0].key, hp->elem[0].id) ;
-  } else {
-      printf("Min Heap is empty!\n") ;
+  }else {
+      printf("(peek)Min Heap %d is empty!\n", hp->num_of_heap) ;
       nd.key = INT_MIN;
       nd.id = INT_MIN;
   }
+  hp->lastPoped = 0 ;
   return nd;
+}
+
+int isHeapEmpty(minHeap *hp){
+  if(hp->lastPoped)return !((hp->size)-1);
+  return !(hp->size);
 }
 
 void freeHeap (minHeap *hp){
@@ -98,21 +114,30 @@ void freeHeap (minHeap *hp){
 
 int testHeap() {
     minHeap hp = initMinHeap(5, -2) ;
-    pushHeap(&hp, 1, 0);
-    pushHeap(&hp, 2, 1);
-    pushHeap(&hp, 8, 2);
-    peekHeap(&hp);
-    pushHeap(&hp, 4, 3);
-    pushHeap(&hp, 3, 4);
-    peekHeap(&hp);
-    pushHeap(&hp, 9, 5);
-    popHeap(&hp);
-    popHeap(&hp);
-    peekHeap(&hp);
-    popHeap(&hp);
-    popHeap(&hp);
-    popHeap(&hp);
-    popHeap(&hp);
-    popHeap(&hp);
+    node nd ;
+    int array[] = {2, 5, 3, 7, 4, 8, 6, 24, 77, 54};
+    int size = 10 ;
+    for(int i=0; i<size; i++){
+      pushHeap(&hp, array[i], i);
+      printf("push: key: %d, id: %u\n",array[i] , i) ;
+      if(i%3==0){
+        nd=popHeap(&hp);
+        printf("pop: key: %d, id: %u\n", nd.key, nd.id) ;
+      }
+      if(i%4==0&&i!=0) {
+        nd = peekHeap(&hp);
+        printf("peek: key: %d, id: %u\n", nd.key, nd.id) ;
+      }
+    }
+    while(!isHeapEmpty(&hp)) {
+      nd=peekHeap(&hp);
+      printf("peek: key: %d, id: %u\n", nd.key, nd.id) ;
+      nd=popHeap(&hp);
+      printf("pop: key: %d, id: %u\n", nd.key, nd.id) ;
+    }
+    nd=peekHeap(&hp);
+    printf("peek: key: %d, id: %u\n", nd.key, nd.id) ;
+    nd=popHeap(&hp);
+    printf("pop: key: %d, id: %u\n", nd.key, nd.id) ;
     return 0;
 }

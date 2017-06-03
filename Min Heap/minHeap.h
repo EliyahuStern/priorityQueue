@@ -7,9 +7,11 @@ typedef struct node {
 } node ;
 
 typedef struct minHeap {
+    //lastPoped value would be 0 if last action wasn't popHeap
+    int lastPoped ;
     int num_of_heap ;
     int size ;
-    int capacity;
+    int capacity ;
     node *elem ;
 } minHeap ;
 
