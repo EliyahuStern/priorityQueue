@@ -8,7 +8,7 @@
 
 priorityQueue initPriorityQueue(){
   priorityQueue pq ;
-  pq.id = 0 ;
+  pq.id = 1 ;
   pq.size = 0 ;
   pq.indexes = initMinHeap(HEAPS, -1) ;
   pq.ranges = (minHeap*)malloc(HEAPS * sizeof(node)) ;
@@ -26,7 +26,8 @@ int getRangeIndex (int key){
 
 void push(priorityQueue *pq, int key){
     int  index = getRangeIndex (key);
-    printf("push: heap: %d\tkey: %d,\tid: %u\n",index, key, pq->id);
+    //printf("push: heap: %d\tkey: %d,\tid: %u\n",index, key, pq->id);
+    printf("push:\tkey: %d,\tid:%u\n", key, pq->id);
     //if the spesific range heap is empty:
     if(isHeapEmpty(&(pq->ranges[index]))){
     //push the right index to the index heap
@@ -46,7 +47,8 @@ node pop(priorityQueue *pq){
       popHeap(&(pq->indexes)) ;
     }
     (pq->size)--;
-    printf("pop:  heap: %d\tkey: %d,\tid: %u\n",index, nd.key, nd.id);
+    printf("pop: \tkey: %d,\tid:%u\n", nd.key, nd.id);
+    //printf("pop:  heap: %d\tkey: %d,\tid: %u\n",index, nd.key, nd.id);
     return nd ;
   }else{
     printf("Priority Queue is empty!\n") ;
@@ -57,7 +59,8 @@ node pop(priorityQueue *pq){
 node peek(priorityQueue *pq){
   if(!isHeapEmpty(&(pq->indexes))){
     node nd = peekHeap(&(pq->ranges[peekHeap(&(pq->indexes)).key])) ;
-    printf("peek: heap: %d\tkey: %d,\tid: %u\n",peekHeap(&(pq->indexes)).key, nd.key, nd.id) ;
+    //printf("peek: heap: %d\tkey: %d,\tid: %u\n",peekHeap(&(pq->indexes)).key, nd.key, nd.id) ;
+    printf("peek:\tkey: %d,\tid:%u\n", nd.key, nd.id) ;
     return nd ;
   }else{
     printf("Priority Queue is empty!\n") ;
