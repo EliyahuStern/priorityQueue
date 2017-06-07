@@ -1,5 +1,5 @@
-#include "minHeap.h"
 #include "priorityQueue.h"
+#include "maxHeap.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -10,10 +10,10 @@ priorityQueue initPriorityQueue(){
   priorityQueue pq ;
   pq.id = 1 ;
   pq.size = 0 ;
-  pq.indexes = initMinHeap(HEAPS, -1) ;
-  pq.ranges = (minHeap*)malloc(HEAPS * sizeof(node)) ;
+  pq.indexes = initMaxHeap(HEAPS, -1) ;
+  pq.ranges = (maxHeap*)malloc(HEAPS * sizeof(node)) ;
   for( int i = 0 ; i < HEAPS ; i++ ){
-    pq.ranges[i]=initMinHeap((AVARAGE_CAPACITY * 2 / HEAPS), i) ;
+    pq.ranges[i]=initMaxHeap((AVARAGE_CAPACITY * 2 / HEAPS), i) ;
   }
   //printf("17\n");
   return pq ;
@@ -27,7 +27,7 @@ int getRangeIndex (int key){
 void push(priorityQueue *pq, int key){
     int  index = getRangeIndex (key);
     //printf("push: heap: %d\tkey: %d,\tid: %u\n",index, key, pq->id);
-    printf("push:\tkey: %d,\tid:%u\n", key, pq->id);
+    //printf("push:\tkey: %d,\tid:%u\n", key, pq->id);
     //if the spesific range heap is empty:
     if(isHeapEmpty(&(pq->ranges[index]))){
     //push the right index to the index heap
@@ -39,7 +39,7 @@ void push(priorityQueue *pq, int key){
 }
 
 node pop(priorityQueue *pq){
-  //if there are nodes in
+  //if there are nodes in pq
   if(!isEmpty(pq)){
     int index = peekHeap(&(pq->indexes)).key ;
     node nd = popHeap(&(pq->ranges[index])) ;
@@ -47,11 +47,11 @@ node pop(priorityQueue *pq){
       popHeap(&(pq->indexes)) ;
     }
     (pq->size)--;
-    printf("pop: \tkey: %d,\tid:%u\n", nd.key, nd.id);
+    //printf("pop: \tkey: %d,\tid:%u\n", nd.key, nd.id);
     //printf("pop:  heap: %d\tkey: %d,\tid: %u\n",index, nd.key, nd.id);
     return nd ;
   }else{
-    printf("Priority Queue is empty!\n") ;
+    printf("(pop)Priority Queue is empty!\n") ;
     return peekHeap(&(pq->indexes)) ;
   }
 }
@@ -60,16 +60,20 @@ node peek(priorityQueue *pq){
   if(!isHeapEmpty(&(pq->indexes))){
     node nd = peekHeap(&(pq->ranges[peekHeap(&(pq->indexes)).key])) ;
     //printf("peek: heap: %d\tkey: %d,\tid: %u\n",peekHeap(&(pq->indexes)).key, nd.key, nd.id) ;
-    printf("peek:\tkey: %d,\tid:%u\n", nd.key, nd.id) ;
+    //printf("peek:\tkey: %d,\tid:%u\n", nd.key, nd.id) ;
     return nd ;
   }else{
-    printf("Priority Queue is empty!\n") ;
+    printf("(peek)Priority Queue is empty!\n") ;
     return peekHeap(&(pq->indexes)) ;
   }
 }
 
 int isEmpty (priorityQueue *pq){
   return !pq->size;
+}
+
+int size (priorityQueue *pq){
+  return pq->size;
 }
 
 void freeQueue(priorityQueue *pq){

@@ -1,12 +1,12 @@
 #ifndef PRIORITY_QUEUE
 #define PRIORITY_QUEUE
-#include "minHeap.h"
+#include "maxHeap.h"
 
 typedef struct priorityQueue {
     unsigned int id ;
     unsigned int size ;
-    minHeap indexes ;
-    minHeap *ranges ;
+    maxHeap indexes ;
+    maxHeap *ranges ;
 } priorityQueue ;
 
 priorityQueue initPriorityQueue();
@@ -16,5 +16,6 @@ node peek(priorityQueue *pq);
 int isEmpty (priorityQueue *pq);
 void freeQueue(priorityQueue *pq);
 int testQueue();
+int size (priorityQueue *pq) ;
 
 #endif

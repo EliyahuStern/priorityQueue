@@ -1,4 +1,4 @@
-#include "minHeap.h"
+#include "maxHeap.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -7,8 +7,8 @@
 #define RCHILD(x) 2 * x + 2
 #define PARENT(x) (x - 1) / 2
 
-minHeap initMinHeap(int capacity, int num_of_heap) {
-    minHeap hp ;
+maxHeap initMaxHeap(int capacity, int num_of_heap) {
+    maxHeap hp ;
     hp.lastPoped = 0 ;
     hp.num_of_heap = num_of_heap ;
     if (capacity <= 0){
@@ -21,13 +21,19 @@ minHeap initMinHeap(int capacity, int num_of_heap) {
     return hp ;
 }
 
+int heapSize (maxHeap *hp){
+  if (hp->lastPoped) return hp->size-1 ;
+  return hp->size ;
+
+}
+
 void swap(node *n1, node *n2) {
     node temp = *n1 ;
     *n1 = *n2 ;
     *n2 = temp ;
 }
 
-void heapify(minHeap *hp, int i) {
+void heapify(maxHeap *hp, int i) {
     int smallest = (LCHILD(i) < hp->size && hp->elem[LCHILD(i)].key > hp->elem[i].key) ? LCHILD(i) : i ;
     if(RCHILD(i) < hp->size && hp->elem[RCHILD(i)].key > hp->elem[smallest].key) {
         smallest = RCHILD(i) ;
@@ -38,7 +44,7 @@ void heapify(minHeap *hp, int i) {
     }
 }
 
-void pushHeap(minHeap *hp, int key, unsigned int id) {
+void pushHeap(maxHeap *hp, int key, unsigned int id) {
   // initializing the node with value
   node nd;
   nd.key = key ;
@@ -59,7 +65,7 @@ void pushHeap(minHeap *hp, int key, unsigned int id) {
         //free(hp->elem) ;
         hp->elem = temp ;
     }
-    // Positioning the node at the right position in the min heap
+    // Positioning the node at the right position in the max heap
     int i = (hp->size)++ ;
     while(i && nd.key > hp->elem[PARENT(i)].key) {
         hp->elem[i] = hp->elem[PARENT(i)] ;
@@ -71,13 +77,13 @@ void pushHeap(minHeap *hp, int key, unsigned int id) {
   hp->lastPoped = 0;
 }
 
-void handleLastPoped (minHeap *hp){
+void handleLastPoped (maxHeap *hp){
     if(hp->size) --(hp->size);
     hp->elem[0] = hp->elem[hp->size] ;
     heapify(hp, 0) ;
 }
 
-node popHeap(minHeap *hp){
+node popHeap(maxHeap *hp){
   node nd;
   if(hp->lastPoped) {
     handleLastPoped(hp) ;
@@ -85,7 +91,7 @@ node popHeap(minHeap *hp){
   if(hp->size) {
       nd=hp->elem[0];
   } else {
-      printf("(pop)Min Heap %d is empty!\n", hp->num_of_heap) ;
+      printf("(pop)Max Heap %d is empty!\n", hp->num_of_heap) ;
       nd.key = INT_MIN;
       nd.id = INT_MIN;
   }
@@ -93,7 +99,7 @@ node popHeap(minHeap *hp){
   return nd;
 }
 
-node peekHeap(minHeap *hp) {
+node peekHeap(maxHeap *hp) {
   node nd;
   if(hp->lastPoped) {
     handleLastPoped(hp) ;
@@ -101,7 +107,7 @@ node peekHeap(minHeap *hp) {
   if(hp->size) {
       nd=hp->elem[0];
   }else {
-      printf("(peek)Min Heap %d is empty!\n", hp->num_of_heap) ;
+      printf("(peek)Max Heap %d is empty!\n", hp->num_of_heap) ;
       nd.key = INT_MIN;
       nd.id = INT_MIN;
   }
@@ -109,17 +115,17 @@ node peekHeap(minHeap *hp) {
   return nd;
 }
 
-int isHeapEmpty(minHeap *hp){
+int isHeapEmpty(maxHeap *hp){
   if(hp->lastPoped)return !((hp->size)-1);
   return !(hp->size);
 }
 
-void freeHeap (minHeap *hp){
+void freeHeap (maxHeap *hp){
   free(hp->elem);
 }
 
-int testMinHeap() {
-    minHeap hp = initMinHeap(5, -2) ;
+int testMaxHeap() {
+    maxHeap hp = initMaxHeap(5, -2) ;
     node nd ;
     int array[] = {2, 5, 3, 7, 4, 8, 6, 24, 77, 54};
     int size = 10 ;

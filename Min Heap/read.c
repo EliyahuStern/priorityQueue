@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "read.h"
-char* ReadFile(char *filename)
+
+read ReadFile(char *filename)
 {
    char *buffer = NULL;
    int string_size, read_size;
@@ -37,46 +38,26 @@ char* ReadFile(char *filename)
        // Always remember to close the file.
        fclose(handler);
     }
-
-    return buffer;
+    read r;
+    r.text = buffer ;
+    r.length = string_size ;
+    return r;
 }
 
 int readf()
 {
-    char* string = ReadFile("randoms.txt");
-    if (string)
+    read r = ReadFile("read.txt");
+    if (r.text)
     {
-        puts(string);
-        free(string);
+        puts(r.text);
+        free(r.text);
     }
     return 0;
 }
 
 int testRead() {
-  int size = 0;
-  char* string = ReadFile("randoms.txt") ;
-  int i = 0 ;
-   while(i < 22){
-    int num = (int)strtol(string, NULL, 16) ;
-    int action = num-size ;
-    size = size + action ;
-    string+=11 ;
-    int key = (int)strtol(string, NULL, 16) ;
-    string+=10 ;
-    int id = (int)strtol(string, NULL, 16) ;
-    switch(action){
-      case -1 :
-        printf("POP: key: %d, id:%d\n", key, id) ;
-        break ;
-      case 0 :
-        printf("PEEK:key: %d, id:%d\n", key, id) ;
-        break ;
-      case 1 :
-        printf("PUSH:key: %d, id:%d\n", key, id) ;
-        break ;
-    }
-    string+=9 ;
-    i++ ;
-   }
+  read r = ReadFile("read.txt") ;
+  puts(r.text) ;
+  printf("%d\n", r.length) ;
   return 0;
 }
