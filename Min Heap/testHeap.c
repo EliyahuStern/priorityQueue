@@ -4,7 +4,7 @@
 #include "maxHeap.h"
 #include "read.h"
 #define LINE 29
-#define NUM_OF_NODES 100000
+#define NUM_OF_NODES 1000000
 #define NUM_OF_LINES NUM_OF_NODES*2
 #define PUSH 1
 #define PEEK 0
@@ -39,7 +39,7 @@ void printToStringHeap (char** string, int action, int* id, maxHeap* hp, int key
       nd.id = (*id)++ ;
 
       //push to maxHeap
-      printf("push: ");
+      //printf("push: ");
       pushHeap(hp, nd.key, nd.id) ;
     break ;
 
@@ -57,7 +57,7 @@ void printToStringHeap (char** string, int action, int* id, maxHeap* hp, int key
       (*string)++ ;
 
       //pop prom maxHeap
-      printf("pop : ") ;
+      //printf("pop : ") ;
       nd = popHeap(hp) ;
     break ;
 
@@ -75,7 +75,7 @@ void printToStringHeap (char** string, int action, int* id, maxHeap* hp, int key
       (*string)++ ;
 
       //peek prom maxHeap
-      printf("peek: ");
+      //printf("peek: ");
       nd = peekHeap(hp) ;
     break ;
   }
@@ -95,7 +95,7 @@ void printToStringHeap (char** string, int action, int* id, maxHeap* hp, int key
   *string += 5 ;
   **string = '\n' ;
   (*string)++ ;
-  printf("key: %d\tid: %d\n", nd.key, nd.id) ;
+  //printf("key: %d\tid: %d\n", nd.key, nd.id) ;
 }
 
 //function to write a string into the name file//
@@ -122,7 +122,7 @@ int writeTestToTextHeap( char* theTest) {
   int id = 1 ;
   int action ;
   int key ;
-  maxHeap hp = initMaxHeap(NUM_OF_NODES, 0) ;
+  maxHeap hp = initMaxHeap(NUM_OF_NODES/2, 0) ;
   srand((unsigned)time(NULL));   // should only be called once
 
   //loop that makes the test
@@ -137,7 +137,7 @@ int writeTestToTextHeap( char* theTest) {
     }
     //make the action and insert into the test string
     printToStringHeap(&string, action, &id, &hp, key) ;
-    printf("i=%d\n", i);
+    //printf("i=%d\n", i);
     i++ ;
   }
 
@@ -196,5 +196,6 @@ int main(int argc, char const *argv[]) {
   char* result= "resultHeap.txt" ;
   writeTestToTextHeap(theTest);
   testTheTextHeap(theTest, result) ;
+  printf("done with the test\n") ;
   return 0 ;
 }

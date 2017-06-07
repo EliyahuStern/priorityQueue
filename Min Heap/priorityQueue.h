@@ -10,7 +10,7 @@ typedef struct priorityQueue {
 } priorityQueue ;
 
 priorityQueue initPriorityQueue();
-void push(priorityQueue *pq, int key);
+void push(priorityQueue *pq, unsigned int key);
 node pop(priorityQueue *pq);
 node peek(priorityQueue *pq);
 int isEmpty (priorityQueue *pq);

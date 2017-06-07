@@ -2,8 +2,8 @@
 #define MAX_HEAP
 
 typedef struct node {
-    int key ;
-    unsigned int id;
+    unsigned int key ;
+    int id;
 } node ;
 
 typedef struct maxHeap {
@@ -16,7 +16,7 @@ typedef struct maxHeap {
 } maxHeap ;
 
 maxHeap initMaxHeap(int capacity, int num_of_heap);
-void pushHeap(maxHeap *hp, int key, unsigned int id);
+void pushHeap(maxHeap *hp, unsigned int key, int id);
 node popHeap(maxHeap *hp);
 node peekHeap(maxHeap *hp);
 int isHeapEmpty(maxHeap *hp);

@@ -1,11 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "maxHeap.h"
 #include "priorityQueue.h"
 #include "read.h"
 #define LINE 29
-#define NUM_OF_NODES 100
+#define NUM_OF_NODES 500
 #define NUM_OF_LINES NUM_OF_NODES*2
 #define PUSH 1
 #define PEEK 0
@@ -40,7 +39,7 @@ void printToStringQueue (char** string, int action, int* id, priorityQueue* pq, 
       nd.id = (*id)++ ;
 
       //push to priority queue
-      printf("push: ");
+      //printf("push: ");
       push(pq, key) ;
     break ;
 
@@ -58,7 +57,7 @@ void printToStringQueue (char** string, int action, int* id, priorityQueue* pq, 
       (*string)++ ;
 
       //pop prom priority queue
-      printf("pop : ") ;
+      //printf("pop : ") ;
       nd = pop(pq) ;
     break ;
 
@@ -76,7 +75,7 @@ void printToStringQueue (char** string, int action, int* id, priorityQueue* pq, 
       (*string)++ ;
 
       //peek prom priority queue
-      printf("peek: ");
+      //printf("peek: ");
       nd = peek(pq) ;
     break ;
   }
@@ -96,7 +95,7 @@ void printToStringQueue (char** string, int action, int* id, priorityQueue* pq, 
   *string += 5 ;
   **string = '\n' ;
   (*string)++ ;
-  printf("key: %d\tid: %d\n", nd.key, nd.id) ;
+  //printf("key: %d\tid: %d\n", nd.key, nd.id) ;
 }
 
 //function to write a string into the name file//
@@ -138,7 +137,7 @@ int writeTestToTextQueue( char* theTest) {
     }
     //make the action and insert into the test string
     printToStringQueue(&string, action, &id, &pq, key) ;
-    printf("i=%d\n", i);
+    //printf("i=%d\n", i);
     i++ ;
   }
 
@@ -197,5 +196,6 @@ int main(int argc, char const *argv[]) {
   char* result= "resultQueue.txt" ;
   writeTestToTextQueue(theTest);
   //testTheTextQueue(theTest, result) ;
+  printf("done with test priority\n") ;
   return 0 ;
 }
