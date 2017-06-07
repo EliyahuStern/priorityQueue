@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <string.h>
 #define LCHILD(x) 2 * x + 1
 #define RCHILD(x) 2 * x + 2
 #define PARENT(x) (x - 1) / 2
@@ -27,8 +28,8 @@ void swap(node *n1, node *n2) {
 }
 
 void heapify(minHeap *hp, int i) {
-    int smallest = (LCHILD(i) < hp->size && hp->elem[LCHILD(i)].key < hp->elem[i].key) ? LCHILD(i) : i ;
-    if(RCHILD(i) < hp->size && hp->elem[RCHILD(i)].key < hp->elem[smallest].key) {
+    int smallest = (LCHILD(i) < hp->size && hp->elem[LCHILD(i)].key > hp->elem[i].key) ? LCHILD(i) : i ;
+    if(RCHILD(i) < hp->size && hp->elem[RCHILD(i)].key > hp->elem[smallest].key) {
         smallest = RCHILD(i) ;
     }
     if(smallest != i) {
@@ -51,13 +52,18 @@ void pushHeap(minHeap *hp, int key, unsigned int id) {
     // reallocating space
     if(hp->size == hp->capacity) {
         printf("realloc the %d heap!\n", hp->num_of_heap);
-        hp->capacity *= 2 ;
-        hp->elem = (node*)realloc(hp->elem, (hp->capacity) * sizeof(node)) ;
+         hp->capacity *= 2 ;
+        //(hp->elem) = (node*)realloc((hp->elem), (hp->capacity) * sizeof(node)) ;
+        node* temp = (node*)malloc((hp->capacity) * sizeof(node));
+        memcpy(temp, hp->elem, (hp->capacity/2)*sizeof(node)) ;
+        //free(hp->elem) ;
+        hp->elem = temp ;
     }
     // Positioning the node at the right position in the min heap
     int i = (hp->size)++ ;
-    while(i && nd.key < hp->elem[PARENT(i)].key) {
+    while(i && nd.key > hp->elem[PARENT(i)].key) {
         hp->elem[i] = hp->elem[PARENT(i)] ;
+        //&(hp->elem[i]) == (char*)hp->elem + sizeof(*elem) * i)
         i = PARENT(i) ;
     }
     hp->elem[i] = nd ;
@@ -112,7 +118,7 @@ void freeHeap (minHeap *hp){
   free(hp->elem);
 }
 
-int testHeap() {
+int testMinHeap() {
     minHeap hp = initMinHeap(5, -2) ;
     node nd ;
     int array[] = {2, 5, 3, 7, 4, 8, 6, 24, 77, 54};
