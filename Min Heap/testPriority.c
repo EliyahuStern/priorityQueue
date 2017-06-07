@@ -4,15 +4,16 @@
 #include "priorityQueue.h"
 #include "read.h"
 #define LINE 29
-#define NUM_OF_NODES 500
+#define NUM_OF_NODES 1000000
 #define NUM_OF_LINES NUM_OF_NODES*2
+#define CAPACITY 100000
 #define PUSH 1
 #define PEEK 0
 #define POP -1
 
 //function to make an action on the priority queue and prints the data into a given string//
 void printToStringQueue (char** string, int action, int* id, priorityQueue* pq, int key){
-  node nd;
+  node* nd = (node*)malloc(sizeof(node));
 
   //write new size to the string, pedding with zeroes
   sprintf(*string, "%06d", action+size(pq)) ;
@@ -35,8 +36,8 @@ void printToStringQueue (char** string, int action, int* id, priorityQueue* pq, 
       (*string)++ ;
 
       //initializing nd
-      nd.key = key ;
-      nd.id = (*id)++ ;
+      nd->key = key ;
+      nd->id = (*id)++ ;
 
       //push to priority queue
       //printf("push: ");
@@ -81,7 +82,7 @@ void printToStringQueue (char** string, int action, int* id, priorityQueue* pq, 
   }
 
   //write the key to hex string, pedding with zeroes
-  sprintf(*string, "%09x", nd.key) ;
+  sprintf(*string, "%09x", nd->key) ;
   *string += 9 ;
   **string = ' ' ;
   (*string)++ ;
@@ -89,7 +90,7 @@ void printToStringQueue (char** string, int action, int* id, priorityQueue* pq, 
   (*string)++ ;
 
   //warite the id to hex string, pedding with zeroes
-  sprintf(*string, "%05x", nd.id) ;
+  sprintf(*string, "%05x", nd->id) ;
 
   //next line
   *string += 5 ;
@@ -122,12 +123,12 @@ int writeTestToTextQueue( char* theTest) {
   int id = 1 ;
   int action ;
   int key ;
-  priorityQueue pq = initPriorityQueue() ;
+  priorityQueue* pq = initPriorityQueue() ;
   srand((unsigned)time(NULL));   // should only be called once
 
   //loop that makes the test
   int i = 0 ;
-  while(id <= NUM_OF_NODES){
+  while(pq->size <= CAPACITY){
     if(i%6==5) action = -1 ;
     else{
       action = 1 ;
@@ -136,15 +137,22 @@ int writeTestToTextQueue( char* theTest) {
       //key += rand();
     }
     //make the action and insert into the test string
-    printToStringQueue(&string, action, &id, &pq, key) ;
+    printToStringQueue(&string, action, &id, pq, key) ;
     //printf("i=%d\n", i);
     i++ ;
   }
 
+  while(id <= NUM_OF_NODES){
+    action = rand()%2 ;
+    if(action == 0) action = -1;
+    key = rand();
+    printToStringQueue(&string, action, &id, pq, key) ;
+  }
+
   //empty the priority Queue
   action = -1 ;
-  while(!isEmpty(&pq)){
-    printToStringQueue(&string, action, &id, &pq, key) ;
+  while(!isEmpty(pq)){
+    printToStringQueue(&string, action, &id, pq, key) ;
   }
 
   //close the string
@@ -157,21 +165,21 @@ int writeTestToTextQueue( char* theTest) {
 }
 
 //function to check "theTest.txt" file//
-void testTheTextQueue(char* name, char* result){
+void testTheTextQueue(char* name, char* result, clock_t start1){
   //initializing things
-  read r = ReadFile(name) ;
-  priorityQueue pq = initPriorityQueue();
-  char* writeString = (char*) malloc (sizeof(char) * r.length ) ;
+  read* r = ReadFile(name) ;
+  priorityQueue* pq = initPriorityQueue();
+  char* writeString = (char*) malloc (sizeof(char) * r->length ) ;
   char* start = writeString ;
-  char* readString = r.text ;
+  char* readString = r->text ;
   int action ;
 
   //read a line from test text and write the results in the writeString
-   for(int i = 0 ; i <= r.length/LINE ; i++){
+   for(int i = 0 ; i <= r->length/LINE ; i++){
      //reading the size of the prioirity queue(after the action) from text
      int nextSize = (int)strtol(readString, NULL, 10) ;
      //initializing the action by the size
-     action = nextSize - size(&pq) ;
+     action = nextSize - size(pq) ;
      //reading key from text
      readString += 12 ;
      int key = (int)strtol(readString, NULL, 16) ;
@@ -179,7 +187,7 @@ void testTheTextQueue(char* name, char* result){
      readString += 11 ;
      int id = (int)strtol(readString, NULL, 16) ;
      //do action on the priority queue and print it to the writeString
-     printToStringQueue(&writeString, action, &id, &pq, key) ;
+     printToStringQueue(&writeString, action, &id, pq, key) ;
      //next line
      readString+=6 ;
    }
@@ -187,6 +195,10 @@ void testTheTextQueue(char* name, char* result){
    //close the writeString
    writeString-- ;
    writeString[0] = '\0' ;
+   printf("done with test priority\n") ;
+   clock_t end = clock();
+   float seconds = (float)(end - start1) / CLOCKS_PER_SEC;
+   printf("time(sec)=%f\n", seconds) ;
    //write the writeString into file "result.txt"
    writeToFileQueue(start, result) ;
 }
@@ -194,8 +206,8 @@ void testTheTextQueue(char* name, char* result){
 int main(int argc, char const *argv[]) {
   char* theTest ="theTestQueue.txt";
   char* result= "resultQueue.txt" ;
-  writeTestToTextQueue(theTest);
-  //testTheTextQueue(theTest, result) ;
-  printf("done with test priority\n") ;
+  clock_t start = clock();
+  //writeTestToTextQueue(theTest);
+  testTheTextQueue(theTest, result, start) ;
   return 0 ;
 }

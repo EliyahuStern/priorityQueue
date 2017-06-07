@@ -15,10 +15,10 @@ typedef struct maxHeap {
     node *elem ;
 } maxHeap ;
 
-maxHeap initMaxHeap(int capacity, int num_of_heap);
+maxHeap* initMaxHeap(int capacity, int num_of_heap);
 void pushHeap(maxHeap *hp, unsigned int key, int id);
-node popHeap(maxHeap *hp);
-node peekHeap(maxHeap *hp);
+node* popHeap(maxHeap *hp);
+node* peekHeap(maxHeap *hp);
 int isHeapEmpty(maxHeap *hp);
 void freeHeap (maxHeap *hp);
 int heapSize (maxHeap *hp) ;

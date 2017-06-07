@@ -12,7 +12,7 @@
 
 //function to make an action on the maxHeap and prints the data into a given string//
 void printToStringHeap (char** string, int action, int* id, maxHeap* hp, int key){
-  node nd;
+  node* nd = (node*)malloc(sizeof(node));
 
   //write new size to the string, pedding with zeroes
   sprintf(*string, "%06d", action+heapSize(hp)) ;
@@ -35,12 +35,12 @@ void printToStringHeap (char** string, int action, int* id, maxHeap* hp, int key
       (*string)++ ;
 
       //initializing nd
-      nd.key = key ;
-      nd.id = (*id)++ ;
+      nd->key = key ;
+      nd->id = (*id)++ ;
 
       //push to maxHeap
       //printf("push: ");
-      pushHeap(hp, nd.key, nd.id) ;
+      pushHeap(hp, nd->key, nd->id) ;
     break ;
 
     case POP:
@@ -81,7 +81,7 @@ void printToStringHeap (char** string, int action, int* id, maxHeap* hp, int key
   }
 
   //write the key to hex string, pedding with zeroes
-  sprintf(*string, "%09x", nd.key) ;
+  sprintf(*string, "%09x", nd->key) ;
   *string += 9 ;
   **string = ' ' ;
   (*string)++ ;
@@ -89,7 +89,7 @@ void printToStringHeap (char** string, int action, int* id, maxHeap* hp, int key
   (*string)++ ;
 
   //warite the id to hex string, pedding with zeroes
-  sprintf(*string, "%05x", nd.id) ;
+  sprintf(*string, "%05x", nd->id) ;
 
   //next line
   *string += 5 ;
@@ -122,7 +122,7 @@ int writeTestToTextHeap( char* theTest) {
   int id = 1 ;
   int action ;
   int key ;
-  maxHeap hp = initMaxHeap(NUM_OF_NODES/2, 0) ;
+  maxHeap* hp = initMaxHeap(NUM_OF_NODES/2, 0) ;
   srand((unsigned)time(NULL));   // should only be called once
 
   //loop that makes the test
@@ -136,15 +136,15 @@ int writeTestToTextHeap( char* theTest) {
       //key += rand();
     }
     //make the action and insert into the test string
-    printToStringHeap(&string, action, &id, &hp, key) ;
+    printToStringHeap(&string, action, &id, hp, key) ;
     //printf("i=%d\n", i);
     i++ ;
   }
 
   //empty the heap
   action = -1 ;
-  while(!isHeapEmpty(&hp)){
-    printToStringHeap(&string, action, &id, &hp, key) ;
+  while(!isHeapEmpty(hp)){
+    printToStringHeap(&string, action, &id, hp, key) ;
   }
 
   //close the string
@@ -157,21 +157,21 @@ int writeTestToTextHeap( char* theTest) {
 }
 
 //function to check "theTest.txt" file//
-void testTheTextHeap(char* name, char* result){
+void testTheTextHeap(char* name, char* result, clock_t start1){
   //initializing things
-  read r = ReadFile(name) ;
-  maxHeap hp = initMaxHeap(NUM_OF_NODES, 0);
-  char* writeString = (char*) malloc (sizeof(char) * r.length ) ;
+  read* r = ReadFile(name) ;
+  maxHeap* hp = initMaxHeap(NUM_OF_NODES, 0);
+  char* writeString = (char*) malloc (sizeof(char) * r->length ) ;
   char* start = writeString ;
-  char* readString = r.text ;
+  char* readString = r->text ;
   int action ;
 
   //read a line from test text and write the results in the writeString
-   for(int i = 0 ; i <= r.length/LINE ; i++){
+   for(int i = 0 ; i <= r->length/LINE ; i++){
      //reading the size of the prioirity queue(after the action) from text
      int nextSize = (int)strtol(readString, NULL, 10) ;
      //initializing the action by the size
-     action = nextSize - heapSize(&hp) ;
+     action = nextSize - heapSize(hp) ;
      //reading key from text
      readString += 12 ;
      int key = (int)strtol(readString, NULL, 16) ;
@@ -179,7 +179,7 @@ void testTheTextHeap(char* name, char* result){
      readString += 11 ;
      int id = (int)strtol(readString, NULL, 16) ;
      //do action on the maxHeap and print it to the writeString
-     printToStringHeap(&writeString, action, &id, &hp, key) ;
+     printToStringHeap(&writeString, action, &id, hp, key) ;
      //next line
      readString+=6 ;
    }
@@ -187,15 +187,20 @@ void testTheTextHeap(char* name, char* result){
    //close the writeString
    writeString-- ;
    writeString[0] = '\0' ;
+   printf("done with the test\n") ;
+   clock_t end = clock();
+   float seconds = (float)(end - start1) / CLOCKS_PER_SEC;
+   printf("time(sec)=%f\n", seconds) ;
    //write the writeString into file "result.txt"
    writeToFileHeap(start, result) ;
 }
 
 int main(int argc, char const *argv[]) {
-  char* theTest ="theTestHeap.txt";
+  //char* theTest ="theTestHeap.txt";
+  char* theTest ="theTestQueue.txt" ;
   char* result= "resultHeap.txt" ;
-  writeTestToTextHeap(theTest);
-  testTheTextHeap(theTest, result) ;
-  printf("done with the test\n") ;
+  //writeTestToTextHeap(theTest);
+  clock_t start = clock();
+  testTheTextHeap(theTest, result, start) ;
   return 0 ;
 }

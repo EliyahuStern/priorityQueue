@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "read.h"
 
-read ReadFile(char *filename)
+read* ReadFile(char *filename)
 {
    char *buffer = NULL;
    int string_size, read_size;
@@ -38,26 +38,26 @@ read ReadFile(char *filename)
        // Always remember to close the file.
        fclose(handler);
     }
-    read r;
-    r.text = buffer ;
-    r.length = string_size ;
+    read* r = (read*)malloc(sizeof(read));
+    r->text = buffer ;
+    r->length = string_size ;
     return r;
 }
 
 int readf()
 {
-    read r = ReadFile("read.txt");
-    if (r.text)
+    read* r = ReadFile("read.txt");
+    if (r->text)
     {
-        puts(r.text);
-        free(r.text);
+        puts(r->text);
+        free(r->text);
     }
     return 0;
 }
 
 int testRead() {
-  read r = ReadFile("read.txt") ;
-  puts(r.text) ;
-  printf("%d\n", r.length) ;
+  read* r = ReadFile("read.txt") ;
+  puts(r->text) ;
+  printf("%d\n", r->length) ;
   return 0;
 }
